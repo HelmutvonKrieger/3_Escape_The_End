@@ -23,6 +23,15 @@ public class Rocket : MonoBehaviour
     [SerializeField]
     float mainThrust = 50f;
 
+    [SerializeField]
+    AudioClip engineThrust;
+
+    [SerializeField]
+    AudioClip deathSound;
+
+    [SerializeField]
+    AudioClip endLevelChime;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -37,8 +46,8 @@ public class Rocket : MonoBehaviour
     {
         if (state == State.Alive)
         {
-            Thrust();
-            Rotate();
+            RespondToThrustInput();
+            RespondToRotateInput();
         }
     }
 
@@ -55,44 +64,29 @@ public class Rocket : MonoBehaviour
                 print("ok");
                 break;
             case "Finish":
-                state = State.Transcending;
-                Invoke("LoadLevel", 1f);
+                EndLevelSequence();
                 break;
             default:
-                state = State.Dying;
-                Invoke("LoadFirstLevel", 1f);
+                DeathSequence();
                 break;
         }
     }
 
     #region Private methods
 
-    private void Thrust()
+    private void RespondToThrustInput()
     {
         if (Input.GetKey(KeyCode.Space))
         {
-            float thrustThisFrame = mainThrust * Time.deltaTime;
-            rigidBody.AddRelativeForce(Vector3.up * thrustThisFrame);
-
-            // To avoid layering of audio
-            if (!audioSource.isPlaying)
-            {
-                audioSource.Play();
-            }
-
-            //if (!particleSystem.IsAlive())
-            //{
-            //    particleSystem.Play();
-            //}
+            ApplyThrust();
         }
         else
         {
             audioSource.Stop();
-            //particleSystem.Stop();
         }
     }
 
-    private void Rotate()
+    private void RespondToRotateInput()
     {
         // Take manual control of rotation
         rigidBody.freezeRotation = true;
@@ -100,16 +94,52 @@ public class Rocket : MonoBehaviour
 
         if (Input.GetKey(KeyCode.A))
         {
-            transform.Rotate(Vector3.forward * rotationThisFrame);
+            ApplyLeftRotate(rotationThisFrame);
         }
 
         if (Input.GetKey(KeyCode.D))
         {
-            transform.Rotate(Vector3.back * rotationThisFrame);
+            ApplyRightRotate(rotationThisFrame);
         }
 
         // Return control to physics
         rigidBody.freezeRotation = false;
+    }
+
+    private void ApplyThrust()
+    {
+        float thrustThisFrame = mainThrust * Time.deltaTime;
+        rigidBody.AddRelativeForce(Vector3.up * thrustThisFrame);
+
+        // To avoid layering of audio
+        if (!audioSource.isPlaying)
+        {
+            audioSource.PlayOneShot(engineThrust);
+        }
+    }
+
+    private void ApplyLeftRotate(float rotation)
+    {
+        transform.Rotate(Vector3.forward * rotation);
+    }
+
+    private void ApplyRightRotate(float rotation)
+    {
+        transform.Rotate(Vector3.back * rotation);
+    }
+
+    private void DeathSequence()
+    {
+        state = State.Dying;
+        audioSource.PlayOneShot(deathSound);
+        Invoke("LoadFirstLevel", 1f);
+    }
+
+    private void EndLevelSequence()
+    {
+        state = State.Transcending;
+        audioSource.PlayOneShot(endLevelChime);
+        Invoke("LoadNextLevel", 1f);
     }
 
     private void LoadNextLevel()

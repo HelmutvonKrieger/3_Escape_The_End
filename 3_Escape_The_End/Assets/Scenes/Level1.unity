@@ -1297,6 +1297,16 @@ PrefabInstance:
       propertyPath: m_Name
       value: Rocket
       objectReference: {fileID: 0}
+    - target: {fileID: 438545910743344081, guid: d0288325f91e46944b7474b87dab68a7,
+        type: 3}
+      propertyPath: deathSound
+      value: 
+      objectReference: {fileID: 8300000, guid: f577c4096fce6a94dba1094ccaf1194c, type: 3}
+    - target: {fileID: 438545910743344081, guid: d0288325f91e46944b7474b87dab68a7,
+        type: 3}
+      propertyPath: endLevelChime
+      value: 
+      objectReference: {fileID: 8300000, guid: c98aa6e03b51d8d49ba730aba74a8593, type: 3}
     - target: {fileID: 438545910743344108, guid: d0288325f91e46944b7474b87dab68a7,
         type: 3}
       propertyPath: m_LocalPosition.x
