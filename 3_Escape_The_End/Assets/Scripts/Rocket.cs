@@ -36,6 +36,9 @@ public class Rocket : MonoBehaviour
     [SerializeField]
     ParticleSystem successParticles;
 
+    [SerializeField]
+    float levelLoadDelay = 1f;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -146,7 +149,7 @@ public class Rocket : MonoBehaviour
         CancelThrust();
         deathExplosionParticles.Play();
         audioSource.PlayOneShot(deathSound);
-        Invoke("LoadFirstLevel", 1f);
+        Invoke("LoadFirstLevel", levelLoadDelay);
     }
 
     private void EndLevelSequence()
@@ -155,7 +158,7 @@ public class Rocket : MonoBehaviour
         CancelThrust();
         successParticles.Play();
         audioSource.PlayOneShot(endLevelChime);
-        Invoke("LoadNextLevel", 1f);
+        Invoke("LoadNextLevel", levelLoadDelay);
     }
 
     private void LoadNextLevel()
