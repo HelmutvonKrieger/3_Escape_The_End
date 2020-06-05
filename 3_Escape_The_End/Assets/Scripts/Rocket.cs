@@ -39,6 +39,8 @@ public class Rocket : MonoBehaviour
     [SerializeField]
     float levelLoadDelay = 1f;
 
+    bool collisionsAllowed = true;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -56,11 +58,16 @@ public class Rocket : MonoBehaviour
             RespondToThrustInput();
             RespondToRotateInput();
         }
+
+        if (Debug.isDebugBuild)
+        {
+            RespondToDebugInput();
+        }
     }
 
     void OnCollisionEnter(Collision collision)
     {
-        if (state != State.Alive)
+        if (state != State.Alive || !collisionsAllowed)
         {
             Debug.LogWarning(state);
             return;
@@ -112,6 +119,19 @@ public class Rocket : MonoBehaviour
 
         // Return control to physics
         rigidBody.freezeRotation = false;
+    }
+
+    private void RespondToDebugInput()
+    {
+        if (Input.GetKeyDown(KeyCode.C))
+        {
+            collisionsAllowed = !collisionsAllowed;
+        }
+
+        if (Input.GetKeyDown(KeyCode.L))
+        {
+            Invoke("LoadNextLevel", levelLoadDelay);
+        }
     }
 
     private void ApplyThrust()
