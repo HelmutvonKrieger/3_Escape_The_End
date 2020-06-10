@@ -12,32 +12,24 @@ public class Rocket : MonoBehaviour
     {
         Alive,
         Dying,
-        Transcending
+        Transcending,
+        Paused
     }
 
     State state = State.Alive;
 
-    [SerializeField]
-    float rcsThrust = 100f;
-    [SerializeField]
-    float mainThrust = 50f;
+    [SerializeField] float rcsThrust = 100f;
+    [SerializeField] float mainThrust = 50f;
 
-    [SerializeField]
-    AudioClip engineThrust;
-    [SerializeField]
-    AudioClip deathSound;
-    [SerializeField]
-    AudioClip endLevelChime;
+    [SerializeField] AudioClip engineThrust;
+    [SerializeField] AudioClip deathSound;
+    [SerializeField] AudioClip endLevelChime;
 
-    [SerializeField]
-    ParticleSystem engineThrustParticles;
-    [SerializeField]
-    ParticleSystem deathExplosionParticles;
-    [SerializeField]
-    ParticleSystem successParticles;
+    [SerializeField] ParticleSystem engineThrustParticles;
+    [SerializeField] ParticleSystem deathExplosionParticles;
+    [SerializeField] ParticleSystem successParticles;
 
-    [SerializeField]
-    float levelLoadDelay = 1f;
+    [SerializeField] float levelLoadDelay = 1f;
 
     bool collisionsAllowed = true;
 
@@ -58,6 +50,8 @@ public class Rocket : MonoBehaviour
             RespondToThrustInput();
             RespondToRotateInput();
         }
+
+        RespondToPauseInput();
 
         if (Debug.isDebugBuild)
         {
@@ -121,6 +115,27 @@ public class Rocket : MonoBehaviour
         rigidBody.freezeRotation = false;
     }
 
+    private void RespondToPauseInput()
+    {
+        if (Input.GetKey(KeyCode.Escape))
+        {
+            State stateBeforePause = state;
+
+            if (state != State.Paused)
+            {
+                state = State.Paused;
+                Time.timeScale = 0;
+                ShowPauseMenu();
+            }
+            else
+            {
+                ClosePauseMenu();
+                Time.timeScale = 1;
+                state = stateBeforePause;
+            }
+        }
+    }
+
     private void RespondToDebugInput()
     {
         if (Input.GetKeyDown(KeyCode.C))
@@ -181,14 +196,27 @@ public class Rocket : MonoBehaviour
         Invoke("LoadNextLevel", levelLoadDelay);
     }
 
+    private void ShowPauseMenu()
+    {
+        PauseMenu pm = GetComponent<PauseMenu>();
+        pm.ShowMenu();
+    }
+
+    private void ClosePauseMenu()
+    {
+
+    }
+
     private void LoadNextLevel()
     {
-        SceneManager.LoadScene(1);
+        int currSceneIndex = SceneManager.GetActiveScene().buildIndex;
+        int nextSceneIndex = currSceneIndex + 1 < SceneManager.sceneCountInBuildSettings ? currSceneIndex + 1 : 1;
+        SceneManager.LoadScene(nextSceneIndex);
     }
 
     private void LoadFirstLevel()
     {
-        SceneManager.LoadScene(0);
+        SceneManager.LoadScene(1);
     }
 
     #endregion Private methods

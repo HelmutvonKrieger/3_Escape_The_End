@@ -9,12 +9,15 @@ EditorBuildSettings:
     path: Assets/Levels/Main Menu.unity
     guid: 9075b5f91a07a8d4eb2e0a71a6d41663
   - enabled: 1
-    path: Assets/Levels/Level1.unity
+    path: Assets/Levels/Cave.unity
     guid: efc02469ca2703c45a70cc1c67bbe541
   - enabled: 1
-    path: Assets/Levels/Level2.unity
+    path: Assets/Levels/Chompers.unity
+    guid: 3bfea875760ebd347b56aeb658b69b1d
+  - enabled: 1
+    path: Assets/Levels/Needle.unity
     guid: e0d5370593f3f9544ab3378699055a22
   - enabled: 1
-    path: Assets/Levels/Level3.unity
+    path: Assets/Levels/Pipes.unity
     guid: 9127b0da7c25f6c4698ed6dce491b2ad
   m_configObjects: {}
